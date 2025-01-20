@@ -1,0 +1,41 @@
+# UV shell utilities
+# Created: January 19, 2025
+
+# Function to freeze packages to pyproject.toml
+freeze_packages() {
+    if [[ -z "$VIRTUAL_ENV" ]]; then
+        echo "❌ Not in a virtual environment"
+        echo "📝 Run 'uvshell' first to activate your environment"
+        return 1
+    fi
+    
+    echo "🔄 Freezing all installed packages to requirements.txt"
+    uv pip freeze > requirements.txt
+    echo "✅ Froze package versions to requirements.txt"
+}
+
+# Main UV shell function
+uvshell() {
+    # Check for existing .venv
+    if [[ -d ".venv" ]]; then
+        echo "🔍 Found existing .venv directory"
+        source .venv/bin/activate
+    else
+        echo "📦 Creating new virtual environment..."
+        uv init
+        UV_NO_WARN=1 uv venv && source .venv/bin/activate
+    fi
+    
+    # Override 'pip' so it always calls 'uv pip' with the same arguments
+    pip() {
+        command uv pip "$@"
+    }
+
+    # Add uvfreeze command
+    alias uvfreeze="freeze_packages"
+    
+    echo "✨ Virtual environment activated with package tracking"
+    echo "📝 Available commands:"
+    echo "   - pip install <package(s)>  : Install packages - NOTE: replaces 'pip' with 'uv pip'"
+    echo "   - uvfreeze                  : Freeze all installed packages to requirements.txt"
+}

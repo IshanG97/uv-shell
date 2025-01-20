@@ -1,0 +1,4 @@
+# Source UV utilities - NOTE: macOS and Linux only 
+if [ -f ~/.uv ]; then
+    source ~/.uv-shell
+fi
