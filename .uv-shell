@@ -36,17 +36,30 @@ uvshell() {
     fi
     # Mark that we are in UV environment
     export UV_ACTIVE=1
-    
-    # Override 'pip' so it always calls 'uv pip' with the same arguments
+
+    # Override 'pip' to use 'uv add/remove' for installs/uninstalls, fallback to regular pip commands
     pip() {
-        command uv pip "$@"
+        if [[ "$1" == "install" ]]; then
+            shift  # Remove 'install' from arguments
+            echo "📦 Using uv add for dependency tracking..."
+            command uv add "$@"
+        elif [[ "$1" == "uninstall" ]]; then
+            shift  # Remove 'uninstall' from arguments
+            echo "🗑️  Using uv remove for dependency tracking..."
+            command uv remove "$@"
+        else
+            command uv pip "$@"
+        fi
     }
 
     # Add uvfreeze command
     alias uvfreeze="freeze_packages"
-    
-    echo "✨ Virtual environment activated with package tracking"
-    echo "📝 Available commands:"
-    echo "   - pip install <package(s)>  : Install packages - NOTE: replaces 'pip' with 'uv pip'"
-    echo "   - uvfreeze                  : Freeze all installed packages to requirements.txt"
+    echo ""
+    echo "✨ uv activated! Available commands:
+   - pip install <package(s)>   : Install packages (uses uv add)
+   - pip uninstall <package(s)> : Remove packages (uses uv remove)
+   - uvfreeze                   : Freeze packages to requirements.txt
+   - uveject                    : Exit UV environment
+🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️  🏎️"
+    echo ""
 }
