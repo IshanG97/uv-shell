@@ -1,7 +1,16 @@
 # UV shell utilities
 # Created: January 19, 2025
 
-# Function to freeze packages to pyproject.toml
+# Function to unset uv pip
+uveject() {
+    deactivate 2>/dev/null || true
+    unset UV_ACTIVE
+    unset -f pip
+    unalias uvfreeze 2>/dev/null || true
+    echo "🚪 Exited UV environment. 'pip' no longer overridden."
+}
+
+# Function to freeze packages to requirements.txt
 freeze_packages() {
     if [[ -z "$VIRTUAL_ENV" ]]; then
         echo "❌ Not in a virtual environment"
@@ -25,6 +34,8 @@ uvshell() {
         uv init
         UV_NO_WARN=1 uv venv && source .venv/bin/activate
     fi
+    # Mark that we are in UV environment
+    export UV_ACTIVE=1
     
     # Override 'pip' so it always calls 'uv pip' with the same arguments
     pip() {
