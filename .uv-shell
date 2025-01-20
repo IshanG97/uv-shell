@@ -3,7 +3,9 @@
 
 # Function to unset uv pip
 uveject() {
-    deactivate 2>/dev/null || true
+    if [[ -n "$VIRTUAL_ENV" ]]; then
+        deactivate
+    fi
     unset UV_ACTIVE
     unset -f pip
     unalias uvfreeze 2>/dev/null || true
