@@ -1,3 +1,6 @@
+# Ensure the .uv-shell file is copied to the home directory
+cp .uv-shell ~/.uv-shell
+
 # Detect the default shell
 SHELL_NAME=$(basename "$SHELL")
 
