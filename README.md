@@ -5,8 +5,6 @@ The devs at [uv](https://github.com/astral-sh/uv) did an amazing job, so I wante
 ```
 pip install uv
 
-cp .uv-shell ~/.uv-shell
-
 chmod +x setup-uv.sh
 
 ./setup-uv.sh
